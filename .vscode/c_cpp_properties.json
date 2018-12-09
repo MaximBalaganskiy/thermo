@@ -1,0 +1,48 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "C:\\Users\\maxim\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0",
+                "C:\\Users\\max\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0",
+                "C:\\Users\\max.tw\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0",
+                "D:\\Documents\\Arduino\\libraries",
+                "D:\\Documents\\Arduino\\libraries\\Adafruit_MCP9808_Library",
+                "D:\\Documents\\Arduino\\libraries\\WiFiManager",
+                "D:\\Documents\\Arduino\\libraries\\ArduinoJson",
+                "D:\\Documents\\Arduino\\libraries\\Time",
+                "C:\\Users\\Max\\Documents\\Arduino\\libraries",
+                "C:\\Users\\Max\\Documents\\Arduino\\libraries\\Adafruit_MCP9808_Library",
+                "C:\\Users\\Max\\Documents\\Arduino\\libraries\\WiFiManager",
+                "C:\\Users\\Max\\Documents\\Arduino\\libraries\\ArduinoJson",
+                "C:\\Users\\max\\Documents\\Arduino\\libraries\\ArduinoJson\\src",
+                "C:\\Users\\Max.tw\\Documents\\Arduino\\libraries",
+                "C:\\Users\\Max.tw\\Documents\\Arduino\\libraries\\Adafruit_MCP9808_Library",
+                "C:\\Users\\Max.tw\\Documents\\Arduino\\libraries\\WiFiManager",
+                "C:\\Users\\Max.tw\\Documents\\Arduino\\libraries\\ArduinoJson",
+                "C:\\Users\\max.tw\\Documents\\Arduino\\libraries\\ArduinoJson\\src",
+                "C:\\Users\\max.TW\\Documents\\Arduino\\libraries\\NTPClient",
+                "c:/Users/maxim/AppData/Local/Arduino15/packages/esp8266/hardware/esp8266/2.3.0/cores/esp8266",
+                "c:/Users/maxim/AppData/Local/Arduino15/packages/esp8266/hardware/esp8266/2.3.0/libraries/Wire",
+                "c:/Users/maxim/AppData/Local/Arduino15/packages/esp8266/hardware/esp8266/2.3.0/libraries/ESP8266WiFi/src",
+                "c:/Users/maxim/AppData/Local/Arduino15/packages/esp8266/hardware/esp8266/2.3.0/libraries/ESP8266WebServer/src",
+                "c:/Users/maxim/AppData/Local/Arduino15/packages/esp8266/hardware/esp8266/2.3.0/libraries/DNSServer/src",
+                "C:/Program Files (x86)/Arduino/hardware/arduino/avr/cores/arduino"
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": false,
+                "path": [
+                    "C:\\Users\\maxim\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\",
+                    "C:\\Users\\max\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\",
+                    "C:\\Users\\max.tw\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.3.0\\",
+                    "D:\\Documents\\Arduino\\libraries",
+                    "C:\\Users\\Max\\Documents\\Arduino\\libraries",
+                    "C:\\Users\\Max.tw\\Documents\\Arduino\\libraries",
+                    "${workspaceRoot}"
+                ]
+            },
+            "intelliSenseMode": "msvc-x64"
+        }
+    ],
+    "version": 3
+}
