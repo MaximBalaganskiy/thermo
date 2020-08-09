@@ -1,4 +1,5 @@
 #include <FS.h>
+#include <LittleFS.h>
 #include <Wire.h>
 #include <Adafruit_MCP9808.h>
 #include <ESP8266WiFi.h>
@@ -15,6 +16,7 @@ int nightTemperature;
 String dayStart;
 String nightStart;
 bool on = false;
+bool daylightSavings = false;
 long triggerTimeout = 5000;
 String rootHtml;
 std::unique_ptr<ESP8266WebServer> webServer;
@@ -66,44 +68,36 @@ void setup_sensor()
 void load_settings()
 {
   Serial.println("mounting FS...");
-  if (SPIFFS.begin())
+  if (LittleFS.begin())
   {
     Serial.println("mounted file system");
-    if (SPIFFS.exists("/config.json"))
+    Serial.println("reading config file");
+    File configFile = LittleFS.open("/config.json", "r");
+    if (configFile)
     {
-      //file exists, reading and loading
-      Serial.println("reading config file");
-      File configFile = SPIFFS.open("/config.json", "r");
-      if (configFile)
+      Serial.println("opened config file");
+      DynamicJsonDocument doc(1024);
+      DeserializationError error = deserializeJson(doc, configFile);
+      if (error)
       {
-        Serial.println("opened config file");
-        size_t size = configFile.size();
-        // Allocate a buffer to store contents of the file.
-        std::unique_ptr<char[]> buf(new char[size]);
-
-        configFile.readBytes(buf.get(), size);
-        DynamicJsonBuffer jsonBuffer;
-        JsonObject &json = jsonBuffer.parseObject(buf.get());
-        json.printTo(Serial);
-        if (json.success())
-        {
-          Serial.println("\nparsed json");
-          dayTemperature = json.get<int>("dayTemperature");
-          nightTemperature = json.get<int>("nightTemperature");
-          dayStart = json.get<String>("dayStart");
-          nightStart = json.get<String>("nightStart");
-          on = json.get<boolean>("on");
-          triggerTimeout = json.get<long>("triggerTimeout");
-        }
-        else
-        {
-          Serial.println("failed to load json config");
-        }
+        Serial.println("failed to load json config");
+      }
+      else
+      {
+        Serial.println("\nparsed json");
+        serializeJson(doc, Serial);
+        dayTemperature = doc["dayTemperature"];
+        nightTemperature = doc["nightTemperature"];
+        dayStart = doc["dayStart"].as<String>();
+        nightStart = doc["nightStart"].as<String>();
+        on = doc["on"];
+        daylightSavings = doc["daylightSavings"];
+        triggerTimeout = doc["triggerTimeout"];
       }
     }
 
     Serial.println("reading root.html file");
-    File rootFile = SPIFFS.open("/root.html", "r");
+    File rootFile = LittleFS.open("/root.html", "r");
     rootHtml = rootFile.readString();
     rootFile.close();
   }
@@ -116,23 +110,22 @@ void load_settings()
 void save_settings()
 {
   Serial.println("saving config");
-  DynamicJsonBuffer jsonBuffer;
-  JsonObject &json = jsonBuffer.createObject();
-  json["dayTemperature"] = dayTemperature;
-  json["dayStart"] = dayStart;
-  json["nightTemperature"] = nightTemperature;
-  json["nightStart"] = nightStart;
-  json["on"] = on;
-  json["triggerTimeout"] = triggerTimeout;
+  DynamicJsonDocument doc(1024);
+  doc["dayTemperature"] = dayTemperature;
+  doc["dayStart"] = dayStart;
+  doc["nightTemperature"] = nightTemperature;
+  doc["nightStart"] = nightStart;
+  doc["on"] = on;
+  doc["daylightSavings"] = daylightSavings;
+  doc["triggerTimeout"] = triggerTimeout;
 
-  File configFile = SPIFFS.open("/config.json", "w");
+  File configFile = LittleFS.open("/config.json", "w");
   if (!configFile)
   {
     Serial.println("failed to open config file for writing");
   }
-
-  json.printTo(Serial);
-  json.printTo(configFile);
+  serializeJson(doc, Serial);
+  serializeJson(doc, configFile);
   configFile.close();
 }
 
@@ -216,10 +209,8 @@ void sendNTPpacket(IPAddress &address)
 
 long lastLoop = 0;
 char msg[500];
-DynamicJsonBuffer jsonBuffer;
 long triggerTime = 0;
 bool isOn = false;
-JsonObject &json = jsonBuffer.createObject();
 
 void loop()
 {
@@ -245,26 +236,52 @@ void loop()
   }
 }
 
+int localHour()
+{
+  int gmtHour = hour();
+  if (daylightSavings)
+  {
+    gmtHour -= 1;
+    if (gmtHour < 0)
+    {
+      gmtHour = 23;
+    }
+  }
+  return gmtHour;
+}
+
 char currentTime[6];
 char currentTime1[6];
 int getTriggerTemperature()
 {
-    sprintf(currentTime, "%02d:%02d", hour(), minute());
-    if (strcmp(currentTime, dayStart.c_str()) > 0 && strcmp(currentTime, nightStart.c_str()) < 0)
-    {
-      return dayTemperature;
-    }
-    else
-    {
-      return nightTemperature;
-    }
+  sprintf(currentTime, "%02d:%02d", localHour(), minute());
+  if (strcmp(currentTime, dayStart.c_str()) > 0 && strcmp(currentTime, nightStart.c_str()) < 0)
+  {
+    return dayTemperature;
+  }
+  else
+  {
+    return nightTemperature;
+  }
 }
 
 void handleRoot()
 {
   char root[3000];
   int currentT = (int)tempsensor.readTempC();
-  sprintf(root, rootHtml.c_str(), hour(), minute(), second(), currentT, getTriggerTemperature(), dayTemperature, dayStart.c_str(), nightTemperature, nightStart.c_str(), on ? "checked" : "", triggerTimeout);
+  sprintf(root, rootHtml.c_str(),
+          localHour(),
+          minute(),
+          second(),
+          daylightSavings ? "checked" : "",
+          currentT,
+          getTriggerTemperature(),
+          dayTemperature,
+          dayStart.c_str(),
+          nightTemperature,
+          nightStart.c_str(),
+          on ? "checked" : "",
+          triggerTimeout);
   webServer->send(200, "text/html", root);
 }
 
@@ -274,11 +291,11 @@ void handleSave()
   dayStart = webServer->arg("dayStart");
   String nightTemperatureString = webServer->arg("nightTemperature");
   nightStart = webServer->arg("nightStart");
-  String onString = webServer->arg("on");
   String triggerTimeoutString = webServer->arg("triggerTimeout");
   dayTemperature = atof(dayTemperatureString.c_str());
   nightTemperature = atof(nightTemperatureString.c_str());
-  on = onString == "on";
+  on = webServer->arg("on") == "on";
+  daylightSavings = webServer->arg("daylightSavings") == "on";
   triggerTimeout = atof(triggerTimeoutString.c_str());
   save_settings();
   webServer->sendHeader("Location", "/");

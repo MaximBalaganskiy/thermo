@@ -2,84 +2,164 @@
 
 <head>
   <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'>
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css'>
-  <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js'></script>
+  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <style>
+    .container {
+      padding: 20px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    .time {
+      max-width: 200px;
+    }
+
+    #onOffField {
+      margin-bottom: 15px;
+    }
+  </style>
 </head>
 
-<body>
-  <div class='container'>
-    <form action='/save' method='post'>
-      <div class='row'>
-        <div>Time: %d:%02d:%02d</div>
-        <div>Current Temperature: %d</div>
-        <div>Trigger Temperature: %d</div>
+<body class="mdc-typography">
+  <div class="container">
+    <form action="/save" name="myform" method="post">
+      <div class="card mdc-elevation--z2">
+        <span>Time: %d:%02d:%02d</span>
+        <span class="mdc-form-field" id="savingsField">
+          <div class="mdc-checkbox" id="savings">
+            <input type="checkbox" class="mdc-checkbox__native-control" id="daylightSavings" name="daylightSavings" %s />
+            <div class="mdc-checkbox__background">
+              <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                <path class="mdc-checkbox__checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+              </svg>
+              <div class="mdc-checkbox__mixedmark"></div>
+            </div>
+            <div class="mdc-checkbox__ripple"></div>
+          </div>
+          <label for="daylightSavings">Daylight savings</label>
+        </span>
+        <div>Current T°: %d</div>
+        <div>Trigger T°: %d</div>
       </div>
-      <div class='row'>
-        <label>Day Temperature</label>
-        <p class='range-field'>
-          <input type='range' name='dayTemperature' min='10' max='30' value='%d' />
-        </p>
-        <div class="input-field">
-          <input hidden id="dayStartInput" value="%s" />
-          <select name="dayStart" id="dayStart">
-            <option value="06:00">06:00</option>
-            <option value="07:00">07:00</option>
-            <option value="08:00">08:00</option>
-          </select>
-          <label>Starts At</label>
+
+      <div class="card mdc-elevation--z2">
+        <label class="mdc-text-field mdc-text-field--filled mdc-text-field--with-leading-icon time" id="day-start">
+          <span class="mdc-text-field__ripple"></span>
+          <i class="material-icons mdc-text-field__icon mdc-text-field__icon--leading" tabindex="0" role="button"
+            id="sun">wb_sunny</i>
+          <input class="mdc-text-field__input" type="time" aria-labelledby="day-starts-at" name="dayStart" value="%s">
+          <span class="mdc-line-ripple"></span>
+        </label>
+
+        <div class="mdc-slider mdc-slider--discrete" tabindex="0" role="slider" aria-valuemin="10" aria-valuemax="30"
+          aria-valuenow="%d" aria-label="Select Value" id="day-temperature">
+          <div class="mdc-slider__track-container">
+            <div class="mdc-slider__track"></div>
+          </div>
+          <div class="mdc-slider__thumb-container">
+            <div class="mdc-slider__pin">
+              <span class="mdc-slider__pin-value-marker"></span>
+            </div>
+            <svg class="mdc-slider__thumb" width="21" height="21">
+              <circle cx="10.5" cy="10.5" r="7.875"></circle>
+            </svg>
+            <div class="mdc-slider__focus-ring"></div>
+          </div>
         </div>
       </div>
-      <div class='row'>
-        <label>Night Temperature</label>
-        <p class='range-field'>
-          <input type='range' name='nightTemperature' min='10' max='30' value='%d' />
-        </p>
-        <div class="input-field">
-          <input hidden id="nightStartInput" value="%s" />
-          <select name="nightStart" id="nightStart">
-            <option value="22:00">22:00</option>
-            <option value="23:00">23:00</option>
-            <option value="23:30">23:30</option>
-            <option value="23:59">23:59</option>
-          </select>
-          <label>Starts At</label>
+      <input hidden name="dayTemperature" id="dayTemperature">
+
+      <div class="card mdc-elevation--z2">
+        <label class="mdc-text-field mdc-text-field--filled mdc-text-field--with-leading-icon time" id="night-start">
+          <span class="mdc-text-field__ripple"></span>
+          <i class="material-icons mdc-text-field__icon mdc-text-field__icon--leading" tabindex="0" role="button"
+            id="moon">nights_stay</i>
+          <input class="mdc-text-field__input" type="time" aria-labelledby="night-starts-at" name="nightStart" value="%s">
+          <span class="mdc-line-ripple"></span>
+        </label>
+
+        <div class="mdc-slider mdc-slider--discrete" tabindex="0" role="slider" aria-valuemin="10" aria-valuemax="30"
+          aria-valuenow="%d" aria-label="Select Value" id="night-temperature">
+          <div class="mdc-slider__track-container">
+            <div class="mdc-slider__track"></div>
+          </div>
+          <div class="mdc-slider__thumb-container">
+            <div class="mdc-slider__pin">
+              <span class="mdc-slider__pin-value-marker"></span>
+            </div>
+            <svg class="mdc-slider__thumb" width="21" height="21">
+              <circle cx="10.5" cy="10.5" r="7.875"></circle>
+            </svg>
+            <div class="mdc-slider__focus-ring"></div>
+          </div>
+        </div>
+      </div>
+      <input hidden name="nightTemperature" id="nightTemperature">
+
+      <div class="card mdc-elevation--z2">
+        <div class="mdc-form-field" id="onOffField">
+          <div class="mdc-switch" id="onOff">
+            <div class="mdc-switch__track"></div>
+            <div class="mdc-switch__thumb-underlay">
+              <div class="mdc-switch__thumb"></div>
+              <input type="checkbox" id="basic-switch" class="mdc-switch__native-control" role="switch"
+                aria-checked="false" name="on" %s>
+            </div>
+          </div>
+          <label for="basic-switch">off/on</label>
         </div>
 
+        <label class="mdc-text-field mdc-text-field--filled" id="trigger-delay">
+          <span class="mdc-text-field__ripple"></span>
+          <input class="mdc-text-field__input" type="number" aria-labelledby="delay" name="triggerTimeout" value="%s">
+          <span class="mdc-floating-label" id="delay">Trigger delay (ms)</span>
+          <span class="mdc-line-ripple"></span>
+        </label>
       </div>
-      <div class='row'>
-        <div class='switch'>
-          <label>
-              Off
-              <input name='on' type='checkbox' %s>
-              <span class='lever'></span>
-              On
-            </label>
-        </div>
-      </div>
-      <div class='row'>
-        <div class='input-field'>
-          <input name='triggerTimeout' id='triggerTimeout' type='number' value='%d'>
-          <label for='triggerTimeout'>Trigger delay (ms)</label>
-        </div>
-      </div>
-      <button class='waves-effect waves-light btn' type='submit'>Save</button>
-  </div>
-  </form>
+    </form>
+
+    <button class="mdc-button mdc-button--raised" id="save" onclick="submit()">
+      <div class="mdc-button__ripple"></div>
+      <span class="mdc-button__label">Save</span>
+    </button>
   </div>
 </body>
 
 <script>
-  $(document).ready(function () {
-    var dayStart = $("#dayStartInput").val();
-    $("#dayStart option[value='" + dayStart + "']").attr("selected", "");
+  var dayTemp;
+  var nightTemp;
 
-    var nightStart = $("#nightStartInput").val();
-    $("#nightStart option[value='" + nightStart + "']").attr("selected", "");
+  (function () {
+    const savingsField = new mdc.formField.MDCFormField(document.querySelector('#savingsField'));
+    const savings = new mdc.checkbox.MDCCheckbox(document.querySelector('#savings'));
+    dayTemp = new mdc.slider.MDCSlider(document.querySelector('#day-temperature'));
+    const sun = new mdc.textField.MDCTextFieldIcon(document.querySelector('#sun'));
+    const dayStart = new mdc.textField.MDCTextField(document.querySelector('#day-start'));
+    nightTemp = new mdc.slider.MDCSlider(document.querySelector('#night-temperature'));
+    const moon = new mdc.textField.MDCTextFieldIcon(document.querySelector('#moon'));
+    const nightStart = new mdc.textField.MDCTextField(document.querySelector('#night-start'));
+    const onOffField = new mdc.formField.MDCFormField(document.querySelector('#onOffField'));
+    const onOff = new mdc.switchControl.MDCSwitch(document.querySelector('#onOff'));
+    const triggerDelay = new mdc.textField.MDCTextField(document.querySelector('#trigger-delay'));
+    const save = new mdc.ripple.MDCRipple(document.querySelector('#save'));
+  })();
 
-    $('select').material_select();
-  });
-
+  function submit() {
+    document.querySelector("#dayTemperature").value = dayTemp.value;
+    document.querySelector("#nightTemperature").value = nightTemp.value;
+    document.forms['myform'].submit();
+    //console.log(document.forms['myform']);
+    //alert("test");
+  }
 </script>
 
 </html>
