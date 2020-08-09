@@ -13,8 +13,8 @@
 const int relayPin = D1;
 int dayTemperature;
 int nightTemperature;
-String dayStart;
-String nightStart;
+String dayStart("06:00");
+String nightStart("23:00");
 bool on = false;
 bool daylightSavings = false;
 long triggerTimeout = 5000;
@@ -100,6 +100,7 @@ void load_settings()
     File rootFile = LittleFS.open("/root.html", "r");
     rootHtml = rootFile.readString();
     rootFile.close();
+    Serial.println(rootHtml);
   }
   else
   {
@@ -265,9 +266,10 @@ int getTriggerTemperature()
   }
 }
 
+char *root = new char[8000];
+
 void handleRoot()
 {
-  char root[3000];
   int currentT = (int)tempsensor.readTempC();
   sprintf(root, rootHtml.c_str(),
           localHour(),
@@ -276,12 +278,13 @@ void handleRoot()
           daylightSavings ? "checked" : "",
           currentT,
           getTriggerTemperature(),
-          dayTemperature,
           dayStart.c_str(),
-          nightTemperature,
+          dayTemperature,
           nightStart.c_str(),
+          nightTemperature,
           on ? "checked" : "",
           triggerTimeout);
+
   webServer->send(200, "text/html", root);
 }
 
