@@ -26,6 +26,11 @@
     #onOffField {
       margin-bottom: 15px;
     }
+
+    .mdc-text-field__input::-webkit-calendar-picker-indicator {
+      display: initial;
+      outline: none;
+    }
   </style>
 </head>
 
@@ -36,7 +41,8 @@
         <span>Time: %d:%02d:%02d</span>
         <span class="mdc-form-field" id="savingsField">
           <div class="mdc-checkbox" id="savings">
-            <input type="checkbox" class="mdc-checkbox__native-control" id="daylightSavings" name="daylightSavings" %s />
+            <input type="checkbox" class="mdc-checkbox__native-control" id="daylightSavings" name="daylightSavings"
+              %s />
             <div class="mdc-checkbox__background">
               <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
                 <path class="mdc-checkbox__checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
@@ -60,19 +66,21 @@
           <span class="mdc-line-ripple"></span>
         </label>
 
-        <div class="mdc-slider mdc-slider--discrete" tabindex="0" role="slider" aria-valuemin="10" aria-valuemax="30"
-          aria-valuenow="%d" aria-label="Select Value" id="day-temperature">
-          <div class="mdc-slider__track-container">
-            <div class="mdc-slider__track"></div>
-          </div>
-          <div class="mdc-slider__thumb-container">
-            <div class="mdc-slider__pin">
-              <span class="mdc-slider__pin-value-marker"></span>
+        <div class="mdc-slider mdc-slider--discrete" id="day-temperature" data-step="1">
+          <div class="mdc-slider__track">
+            <div class="mdc-slider__track--inactive"></div>
+            <div class="mdc-slider__track--active">
+              <div class="mdc-slider__track--active_fill"></div>
             </div>
-            <svg class="mdc-slider__thumb" width="21" height="21">
-              <circle cx="10.5" cy="10.5" r="7.875"></circle>
-            </svg>
-            <div class="mdc-slider__focus-ring"></div>
+          </div>
+          <div class="mdc-slider__thumb" role="slider" tabindex="0" aria-label="Select Value" aria-valuemin="10"
+            aria-valuemax="30" aria-valuenow="%d">
+            <div class="mdc-slider__value-indicator-container">
+              <div class="mdc-slider__value-indicator">
+                <span class="mdc-slider__value-indicator-text"></span>
+              </div>
+            </div>
+            <div class="mdc-slider__thumb-knob"></div>
           </div>
         </div>
       </div>
@@ -83,23 +91,26 @@
           <span class="mdc-text-field__ripple"></span>
           <i class="material-icons mdc-text-field__icon mdc-text-field__icon--leading" tabindex="0" role="button"
             id="moon">nights_stay</i>
-          <input class="mdc-text-field__input" type="time" aria-labelledby="night-starts-at" name="nightStart" value="%s">
+          <input class="mdc-text-field__input" type="time" aria-labelledby="night-starts-at" name="nightStart"
+            value="%s">
           <span class="mdc-line-ripple"></span>
         </label>
 
-        <div class="mdc-slider mdc-slider--discrete" tabindex="0" role="slider" aria-valuemin="10" aria-valuemax="30"
-          aria-valuenow="%d" aria-label="Select Value" id="night-temperature">
-          <div class="mdc-slider__track-container">
-            <div class="mdc-slider__track"></div>
-          </div>
-          <div class="mdc-slider__thumb-container">
-            <div class="mdc-slider__pin">
-              <span class="mdc-slider__pin-value-marker"></span>
+        <div class="mdc-slider mdc-slider--discrete" id="night-temperature" data-step="1">
+          <div class="mdc-slider__track">
+            <div class="mdc-slider__track--inactive"></div>
+            <div class="mdc-slider__track--active">
+              <div class="mdc-slider__track--active_fill"></div>
             </div>
-            <svg class="mdc-slider__thumb" width="21" height="21">
-              <circle cx="10.5" cy="10.5" r="7.875"></circle>
-            </svg>
-            <div class="mdc-slider__focus-ring"></div>
+          </div>
+          <div class="mdc-slider__thumb" role="slider" tabindex="0" aria-label="Select Value" aria-valuemin="10"
+            aria-valuemax="30" aria-valuenow="%d">
+            <div class="mdc-slider__value-indicator-container">
+              <div class="mdc-slider__value-indicator">
+                <span class="mdc-slider__value-indicator-text"></span>
+              </div>
+            </div>
+            <div class="mdc-slider__thumb-knob"></div>
           </div>
         </div>
       </div>
