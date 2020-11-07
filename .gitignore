@@ -32,7 +32,4 @@ AquaWeb.Portal/wwwroot/*.css
 *.css.map
 publish
 /packages
-/AquaWeb.Portal.Setup/WebSiteContent.wxs
-/AquaWeb.Portal/stats.json
-/AquaWeb.Portal/Pages/Index.cshtml
-/AquaWeb.Portal/wwwroot
+/client/dist

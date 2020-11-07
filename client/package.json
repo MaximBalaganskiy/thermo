@@ -2,7 +2,7 @@
   "name": "aquaweb",
   "version": "0.0.1",
   "scripts": {
-    "nswag": "nswag run /runtime:NetCore30",
+    "prebuild": "rimraf ./dist/*.{js,css,map,html}",
     "build": "webpack --mode production",
     "start": "webpack-dev-server --mode development -d --inline --hot --port 4300 --http --key server.key --cert server.crt",
     "stats": "webpack --mode development --profile --json > stats.json"
@@ -24,6 +24,7 @@
     "mini-css-extract-plugin": "^1.2.1",
     "postcss": "^8.1.6",
     "postcss-loader": "^4.0.4",
+    "rimraf": "^3.0.2",
     "sass": "^1.29.0",
     "sass-loader": "^10.0.5",
     "style-loader": "^2.0.0",

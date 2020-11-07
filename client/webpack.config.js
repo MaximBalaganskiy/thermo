@@ -1,12 +1,11 @@
 /* eslint-disable import/no-nodejs-modules */
 const path = require('path');
 const webpack = require('webpack');
-const { AureliaPlugin, ModuleDependenciesPlugin, GlobDependenciesPlugin } = require('aurelia-webpack-plugin');
-const ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin');
+const { AureliaPlugin, GlobDependenciesPlugin } = require('aurelia-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const bundleOutputDir = '../AquaWeb.Portal/wwwroot';
+const bundleOutputDir = './dist';
 
 module.exports = (env, argv) => {
   if ((!argv || !argv.mode)) {
