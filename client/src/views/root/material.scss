@@ -1,0 +1,7 @@
+@use '@material/theme'with ($primary: #0072c6,
+  $background: #fff,
+  $error: #dc000c);
+
+@use '@material/theme/mdc-theme';
+
+@use "@aurelia-mdc-web/all";

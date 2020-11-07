@@ -165,8 +165,8 @@
   })();
 
   function submit() {
-    document.querySelector("#dayTemperature").value = dayTemp.value;
-    document.querySelector("#nightTemperature").value = nightTemp.value;
+    document.querySelector("#dayTemperature").value = dayTemp.getValue();
+    document.querySelector("#nightTemperature").value = nightTemp.getValue();
     document.forms['myform'].submit();
     //console.log(document.forms['myform']);
     //alert("test");

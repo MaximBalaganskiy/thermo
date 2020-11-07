@@ -51,7 +51,16 @@ void setup_web_server()
   webServer.reset(new ESP8266WebServer(80));
   webServer->on("/", HTTPMethod::HTTP_GET, handleRoot);
   webServer->on("/save", HTTPMethod::HTTP_POST, handleSave);
+  webServer->on("/settings", HTTPMethod::HTTP_GET, handleSettingsGet);
+  webServer->on("/settings", HTTPMethod::HTTP_OPTIONS, sendCrossOriginHeader);
+  webServer->on("/settings", HTTPMethod::HTTP_POST, handleSettingsPost);
   webServer->begin();
+}
+
+void sendCrossOriginHeader()
+{
+  setCrossOrigin();
+  webServer->send(204);
 }
 
 void setup_sensor()
@@ -279,9 +288,9 @@ void handleRoot()
           currentT,
           getTriggerTemperature(),
           dayStart.c_str(),
-          dayTemperature,
+          max(dayTemperature, 10),
           nightStart.c_str(),
-          nightTemperature,
+          max(nightTemperature, 10),
           on ? "checked" : "",
           triggerTimeout);
 
@@ -303,4 +312,54 @@ void handleSave()
   save_settings();
   webServer->sendHeader("Location", "/");
   webServer->send(302, "text/html", "OK");
+}
+
+void setCrossOrigin()
+{
+  webServer->sendHeader("Access-Control-Allow-Origin", "*");
+  webServer->sendHeader("Access-Control-Max-Age", "600");
+  webServer->sendHeader("Access-Control-Allow-Methods", "PUT,POST,GET,OPTIONS");
+  webServer->sendHeader("Access-Control-Allow-Headers", "*");
+};
+
+void handleSettingsGet()
+{
+  setCrossOrigin();
+  DynamicJsonDocument doc(1024);
+  char currentTime[6];
+  sprintf(currentTime, "%02d:%02d", localHour(), minute());
+  doc["currentTime"] = currentTime,
+  doc["currentTemperature"] = (int)tempsensor.readTempC();
+  doc["dayTemperature"] = dayTemperature;
+  doc["dayStart"] = dayStart;
+  doc["nightTemperature"] = nightTemperature;
+  doc["nightStart"] = nightStart;
+  doc["on"] = on;
+  doc["daylightSavings"] = daylightSavings;
+  doc["triggerTimeout"] = triggerTimeout;
+  String json_str;
+  serializeJson(doc, json_str);
+  webServer->send(200, "application/json", json_str);
+}
+
+void handleSettingsPost()
+{
+  DynamicJsonDocument doc(1024);
+  DeserializationError error = deserializeJson(doc, webServer->arg("plain"));
+  if (error)
+  {
+    webServer->send(422);
+    return;
+  }
+
+  serializeJson(doc, Serial);
+  dayTemperature = doc["dayTemperature"];
+  nightTemperature = doc["nightTemperature"];
+  dayStart = doc["dayStart"].as<String>();
+  nightStart = doc["nightStart"].as<String>();
+  on = doc["on"];
+  daylightSavings = doc["daylightSavings"];
+  triggerTimeout = doc["triggerTimeout"];
+  save_settings();
+  webServer->send(200);
 }

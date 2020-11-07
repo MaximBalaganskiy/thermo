@@ -1,0 +1,19 @@
+@use '@material/switch';
+
+.mdc-layout-grid {
+  max-width: 500px;
+}
+
+.mdc-text-field__input::-webkit-calendar-picker-indicator {
+  display: initial;
+  outline: none;
+}
+
+.mdc-text-field[type="time"] {
+  width: 100%;
+}
+
+.mdc-switch {
+  @include switch.toggled-on-color(primary);
+  vertical-align: middle;
+}

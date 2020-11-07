@@ -1,0 +1,12 @@
+@use '@material/theme'with ($primary: #0072c6,
+  $background: #fff,
+  $error: #dc000c);
+
+@use "@material/circular-progress/mdc-circular-progress";
+
+.splash {
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  position: absolute;
+}

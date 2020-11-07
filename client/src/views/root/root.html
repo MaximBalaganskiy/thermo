@@ -1,0 +1,43 @@
+<template>
+  <require from="./material.scss"></require>
+  <require from="./root.scss"></require>
+
+  <mdc-layout-grid>
+    <mdc-layout-grid-inner>
+      <mdc-layout-grid-cell mdc-headline2 span="5">21°</mdc-layout-grid-cell>
+      <mdc-layout-grid-cell mdc-headline2 span="2">
+        <mdc-switch checked.bind="settings.on"></mdc-switch>
+      </mdc-layout-grid-cell>
+      <mdc-layout-grid-cell mdc-headline2 span="5"><span style="float: right;">17:13</span></mdc-layout-grid-cell>
+      <mdc-layout-grid-cell span="12">
+        <mdc-text-field type="time" value.bind="settings.dayStart">
+          <mdc-icon mdc-text-field-icon leading>wb_sunny</mdc-icon>
+        </mdc-text-field>
+        <mdc-slider min="10" max="30" value.bind="settings.dayTemperature" discrete tick-marks></mdc-slider>
+      </mdc-layout-grid-cell>
+      <mdc-layout-grid-cell span="12">
+        <mdc-text-field type="time" value.bind="settings.nightStart">
+          <mdc-icon mdc-text-field-icon leading>nights_stay</mdc-icon>
+        </mdc-text-field>
+        <mdc-slider min="10" max="30" value.bind="settings.nightTemperature" discrete tick-marks></mdc-slider>
+      </mdc-layout-grid-cell>
+      <mdc-layout-grid-cell span="12">
+        <mdc-expandable>
+          <div slot="caption">Settings</div>
+          <mdc-layout-grid-inner>
+            <mdc-layout-grid-cell span="12">
+              <mdc-form-field>
+                <mdc-checkbox checked.bind="settings.daylightSavings"></mdc-checkbox>
+                <label>Daylight savings</label>
+              </mdc-form-field>
+            </mdc-layout-grid-cell>
+            <mdc-layout-grid-cell span="12">
+              <mdc-text-field type="number" label="Trigger delay (ms)" value.bind="settings.triggerTimeout">
+              </mdc-text-field>
+            </mdc-layout-grid-cell>
+          </mdc-layout-grid-inner>
+        </mdc-expandable>
+      </mdc-layout-grid-cell>
+    </mdc-layout-grid-inner>
+  </mdc-layout-grid>
+</template>
