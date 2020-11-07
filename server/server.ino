@@ -344,6 +344,7 @@ void handleSettingsGet()
 
 void handleSettingsPost()
 {
+  setCrossOrigin();
   DynamicJsonDocument doc(1024);
   DeserializationError error = deserializeJson(doc, webServer->arg("plain"));
   if (error)
