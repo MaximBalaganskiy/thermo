@@ -32,4 +32,3 @@ AquaWeb.Portal/wwwroot/*.css
 *.css.map
 publish
 /packages
-/client/dist

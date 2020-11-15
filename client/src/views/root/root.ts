@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unassigned-import
 import './splash-progress.scss'; // import here since CSS required in HTML cannot be extracted
-import { useView, PLATFORM, observable } from 'aurelia-framework';
+import { useView, PLATFORM } from 'aurelia-framework';
 import { ApiService, ISettings } from '../../services/api-service';
 import { MdcSnackbarService } from '@aurelia-mdc-web/snackbar';
 
@@ -10,22 +10,11 @@ export class Root {
 
   settings: ISettings;
 
-  @observable
-  apiUrl: string;
-  apiUrlChanged() {
-    this.api.apiUrl = this.apiUrl;
-  }
-
   async activate() {
-    this.apiUrl = this.api.apiUrl;
-    if (this.apiUrl) {
-      try {
-        this.settings = await this.api.getSettings();
-      } catch {
-        this.snackbarService.open('Could not connect to the thermostat');
-      }
-    } else {
-      this.snackbarService.open('Enter Thermostat IP and refresh the page');
+    try {
+      this.settings = await this.api.getSettings();
+    } catch {
+      this.snackbarService.open('Could not connect to the thermostat');
     }
   }
 

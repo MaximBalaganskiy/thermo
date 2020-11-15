@@ -3,6 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
+                "C:\\Users\\maxim\\AppData\\Local\\Arduino15\\packages\\esp8266\\tools\\**",
+                "C:\\Users\\maxim\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.7.4\\**",
                 "C:\\Users\\maxim\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.7.4",
                 "D:\\Documents\\Arduino\\libraries",
                 "D:\\Documents\\Arduino\\libraries\\Adafruit_MCP9808_Library",
@@ -24,7 +26,8 @@
                     "${workspaceRoot}"
                 ]
             },
-            "intelliSenseMode": "msvc-x64"
+            "intelliSenseMode": "msvc-x64",
+            "forcedInclude": []
         }
     ],
     "version": 4
