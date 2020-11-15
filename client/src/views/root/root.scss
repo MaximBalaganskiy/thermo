@@ -13,7 +13,16 @@
   width: 100%;
 }
 
-.mdc-switch {
-  @include switch.toggled-on-color(primary);
-  vertical-align: middle;
+.header {
+  display: flex;
+  align-items: center;
+
+  .spacer {
+    flex: 1;
+  }
+
+  .mdc-switch {
+    @include switch.toggled-on-color(primary);
+  }
 }
+
