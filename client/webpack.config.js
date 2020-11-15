@@ -29,12 +29,15 @@ module.exports = (env, argv) => {
     entry: { app: './src/main.ts' },
     resolve: {
       extensions: ['.ts', '.js'],
-      modules: ['src', 'node_modules']
+      modules: ['src', 'node_modules'],
+      alias: {
+        'aurelia-authentication': 'aurelia-authentication/dist/native-modules'
+      }
     },
     output: {
       path: path.resolve(bundleOutputDir),
-      filename: '[name].js',
-      chunkFilename: '[name].js',
+      filename: '[name].[hash].js',
+      chunkFilename: '[name].[chunkhash].js',
       pathinfo: false
     },
     module: {
@@ -57,17 +60,17 @@ module.exports = (env, argv) => {
         maxInitialRequests: Infinity,
         minSize: 0,
         cacheGroups: {
-          // vendor: {
-          //   test: /[\\/]node_modules[\\/]/,
-          //   name(module) {
-          //     // get the name. E.g. node_modules/packageName/not/this/part.js
-          //     // or node_modules/packageName
-          //     const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name(module) {
+              // get the name. E.g. node_modules/packageName/not/this/part.js
+              // or node_modules/packageName
+              const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
 
-          //     // npm package names are URL-safe, but some servers don't like @ symbols
-          //     return `npm.${packageName.replace('@', '').replace('google-analytics', 'gan')}`;
-          //   }
-          // }
+              // npm package names are URL-safe, but some servers don't like @ symbols
+              return `npm.${packageName.replace('@', '').replace('google-analytics', 'gan')}`;
+            }
+          }
         }
       }
     },
@@ -79,8 +82,8 @@ module.exports = (env, argv) => {
       new AureliaPlugin(),
       new GlobDependenciesPlugin({ 'main': ['src/{views,custom-elements,converters,attributes}/**/*.{ts,html}'] }),
       new MiniCssExtractPlugin({
-        filename: '[name].css',
-        chunkFilename: '[name].css'
+        filename: '[name].[hash].css',
+        chunkFilename: '[name].[chunkhash].css'
       }),
       new webpack.NormalModuleReplacementPlugin(/environments\/environment/gi, `environments/${production ? 'production' : 'environment'}`)
     ]
