@@ -5,7 +5,7 @@ const { AureliaPlugin, GlobDependenciesPlugin } = require('aurelia-webpack-plugi
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const bundleOutputDir = './dist';
+const bundleOutputDir = '../docs';
 
 module.exports = (env, argv) => {
   if ((!argv || !argv.mode)) {
