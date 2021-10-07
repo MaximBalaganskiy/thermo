@@ -4,20 +4,19 @@ const webpack = require('webpack');
 const { AureliaPlugin, GlobDependenciesPlugin } = require('aurelia-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const bundleOutputDir = '../docs';
 
-module.exports = (env, argv) => {
-  if ((!argv || !argv.mode)) {
-    argv = { mode: 'development' };
-  }
-  const production = argv.mode === 'production';
+module.exports = (env, { mode, analyze } = {}) => {
+  const production = mode === 'production';
   const cssLoaders = [{ loader: 'css-loader', options: { esModule: false } }, 'postcss-loader'];
   const scssLoaders = [...cssLoaders, {
     loader: 'sass-loader', options: {
+      sourceMap: false,
       implementation: require('sass'),
       sassOptions: {
-        includePaths: [path.resolve('./node_modules')]
+        includePaths: [path.resolve('../../node_modules/'), path.resolve('./node_modules')]
       }
     }
   }];
@@ -25,8 +24,16 @@ module.exports = (env, argv) => {
   return [{
     target: 'web',
     mode: production ? 'production' : 'development',
-    devtool: production ? 'source-maps' : 'inline-source-map',
+    devtool: production ? 'source-map' : 'eval-source-map',
     entry: { app: './src/main.ts' },
+    devServer: {
+      hot: true,
+      port: 4300,
+      https: {
+        key: './server.key',
+        cert: './server.crt'
+      }
+    },
     resolve: {
       extensions: ['.ts', '.js'],
       modules: ['src', 'node_modules'],
@@ -36,21 +43,21 @@ module.exports = (env, argv) => {
     },
     output: {
       path: path.resolve(bundleOutputDir),
-      filename: '[name].[hash].js',
+      filename: '[name].[fullhash].js',
       chunkFilename: '[name].[chunkhash].js',
       pathinfo: false
     },
     module: {
       rules: [
-        { test: /\.(woff|woff2)(\?|$)/, loader: 'url-loader?limit=1' },
+        { test: /\.(woff|woff2)(\?|$)/, use: { loader: 'url-loader', options: { limit: 1, esModule: false } } },
         { test: /\.(png|eot|ttf|svg)(\?|$)/, use: { loader: 'url-loader', options: { limit: 1000, esModule: false } } },
         { test: /\.ts$/i, include: [/src/], use: { loader: 'ts-loader', options: { allowTsInNodeModules: false } } },
-        { test: /\.html$/i, use: { loader: 'html-loader', options: { attributes: { list: [{ tag: 'img', attribute: 'src', type: 'src' }, { tag: 'app-nav-bar', attribute: 'logo-url', type: 'src' }] } } } },
-        { test: /\.scss$/i, issuer: [{ test: /\.html$/i }], use: scssLoaders },
-        { test: /\.scss$/i, issuer: [{ not: [{ test: /\.html$/i }] }], exclude: [/splash-progress\.scss$/], use: ['style-loader', ...scssLoaders] },
-        { test: /splash-progress\.scss$/, issuer: [{ not: [{ test: /\.html$/i }] }], use: [{ loader: MiniCssExtractPlugin.loader }, ...scssLoaders] },
-        { test: /\.css$/i, issuer: [{ test: /\.html$/i }], use: cssLoaders },
-        { test: /\.css$/i, issuer: [{ not: [{ test: /\.html$/i }] }], use: ['style-loader', ...cssLoaders] }
+        { test: /\.html$/i, use: { loader: 'html-loader', options: { esModule: false, sources: { list: [{ tag: 'img', attribute: 'src', type: 'src' }, { tag: 'app-nav-bar', attribute: 'logo-url', type: 'src' }] } } } },
+        { test: /\.scss$/i, issuer: /\.html$/i, use: scssLoaders },
+        { test: /\.scss$/i, issuer: [{ not: /\.html$/i }], exclude: [/splash-progress\.scss$/], use: ['style-loader', ...scssLoaders] },
+        { test: /splash-progress\.scss$/, issuer: [{ not: /\.html$/i }], use: [MiniCssExtractPlugin.loader, ...scssLoaders] },
+        { test: /\.css$/i, issuer: [{ not: /\.html$/i }], use: ['style-loader', ...cssLoaders] },
+        { test: /\.css$/i, issuer: /\.html$/i, use: cssLoaders }
       ]
     },
     optimization: {
@@ -82,10 +89,12 @@ module.exports = (env, argv) => {
       new AureliaPlugin(),
       new GlobDependenciesPlugin({ 'main': ['src/{views,custom-elements,converters,attributes}/**/*.{ts,html}'] }),
       new MiniCssExtractPlugin({
-        filename: '[name].[hash].css',
-        chunkFilename: '[name].[chunkhash].css'
+        filename: '[name].[fullhash].css',
+        chunkFilename: '[name].[chunkhash].css',
+        experimentalUseImportModule: false
       }),
-      new webpack.NormalModuleReplacementPlugin(/environments\/environment/gi, `environments/${production ? 'production' : 'environment'}`)
+      new webpack.NormalModuleReplacementPlugin(/environments\/environment/gi, `environments/${production ? 'production' : 'environment'}`),
+      ...(analyze ? [new BundleAnalyzerPlugin()] : [])
     ]
   }];
 };

@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[28],{91:function(n,e,o){},96:function(n,e,o){"use strict";o.r(e);var t,c=o(3);Object.defineProperty(c.d,"Loader",{get:function(){return t||(t=o(97).WebpackLoader)},set:function(n){t=n}})}}]);
-//# sourceMappingURL=npm.aurelia-webpack-plugin.169b78fc3e284b4c83fb.js.map

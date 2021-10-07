@@ -18,16 +18,12 @@ export class Root {
 
   async activate() {
     this.apiUrl = this.api.apiUrl;
-    if (this.apiUrl) {
-      try {
-        this.settings = await this.api.getSettings();
-        this.settings.dayTemperature = Math.min(30, Math.max(10, this.settings.dayTemperature));
-        this.settings.nightTemperature = Math.min(30, Math.max(10, this.settings.nightTemperature));
-      } catch {
-        this.snackbarService.open('Could not connect to the thermostat');
-      }
-    } else {
-      this.snackbarService.open('Enter Thermostat IP and refresh the page');
+    try {
+      this.settings = await this.api.getSettings();
+      this.settings.dayTemperature = Math.min(30, Math.max(10, this.settings.dayTemperature));
+      this.settings.nightTemperature = Math.min(30, Math.max(10, this.settings.nightTemperature));
+    } catch {
+      this.snackbarService.open('Could not connect to the thermostat');
     }
   }
 

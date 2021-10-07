@@ -1,5 +1,3 @@
-@use '@material/switch';
-
 .mdc-layout-grid {
   max-width: 400px;
 }
@@ -19,10 +17,6 @@
 
   .spacer {
     flex: 1;
-  }
-
-  .mdc-switch {
-    @include switch.toggled-on-color(primary);
   }
 }
 
