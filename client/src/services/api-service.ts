@@ -18,7 +18,7 @@ export class ApiService {
   constructor(private http: HttpClient) { }
 
   get apiUrl(): string {
-    return window.localStorage.getItem('apiUrl');
+    return window.localStorage.getItem('apiUrl') ?? '';
   }
 
   set apiUrl(value: string) {

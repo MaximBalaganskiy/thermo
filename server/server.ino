@@ -20,7 +20,6 @@ String nightStart("23:00");
 bool on = false;
 bool daylightSavings = false;
 long triggerTimeout = 5000;
-String rootHtml;
 std::unique_ptr<ESP8266WebServer> webServer;
 WiFiClient espClient;
 Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
@@ -51,11 +50,11 @@ void setup_wifi()
 void setup_web_server()
 {
   webServer.reset(new ESP8266WebServer(80));
-  webServer->on("/", HTTPMethod::HTTP_GET, handleRoot);
   webServer->on("/save", HTTPMethod::HTTP_POST, handleSave);
   webServer->on("/settings", HTTPMethod::HTTP_GET, handleSettingsGet);
   webServer->on("/settings", HTTPMethod::HTTP_OPTIONS, sendCrossOriginHeader);
   webServer->on("/settings", HTTPMethod::HTTP_POST, handleSettingsPost);
+  webServer->serveStatic("/", LittleFS, "/", "max-age=0"); 
   webServer->begin();
 }
 
@@ -106,12 +105,6 @@ void load_settings()
         triggerTimeout = doc["triggerTimeout"];
       }
     }
-
-    Serial.println("reading root.html file");
-    File rootFile = LittleFS.open("/index.html", "r");
-    rootHtml = rootFile.readString();
-    rootFile.close();
-    //Serial.println(rootHtml);
   }
   else
   {
@@ -198,33 +191,6 @@ int getTriggerTemperature()
   {
     return nightTemperature;
   }
-}
-
-char *root = new char[8000];
-
-void handleRoot()
-{
-  struct tm *timeinfo;
-  time_t utc = now();
-  time(&utc);
-  timeinfo = localtime(&utc);
-
-  int currentT = (int)tempsensor.readTempC();
-  sprintf(root, rootHtml.c_str(),
-          timeinfo->tm_hour,
-          timeinfo->tm_min,
-          timeinfo->tm_sec,
-          daylightSavings ? "checked" : "",
-          currentT,
-          getTriggerTemperature(),
-          dayStart.c_str(),
-          max(dayTemperature, 10),
-          nightStart.c_str(),
-          max(nightTemperature, 10),
-          on ? "checked" : "",
-          triggerTimeout);
-
-  webServer->send(200, "text/html", root);
 }
 
 void handleSave()
