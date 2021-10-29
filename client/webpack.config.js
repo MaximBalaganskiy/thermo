@@ -43,8 +43,8 @@ module.exports = (env, { mode, analyze } = {}) => {
     },
     output: {
       path: path.resolve(bundleOutputDir),
-      filename: '[name].[fullhash].js',
-      chunkFilename: '[name].[chunkhash].js',
+      filename: '[name].js',
+      chunkFilename: '[name].js',
       pathinfo: false
     },
     module: {
@@ -61,8 +61,8 @@ module.exports = (env, { mode, analyze } = {}) => {
       ]
     },
     optimization: {
-      splitChunks: {
-        chunks: 'all',
+      // splitChunks: {
+      //   chunks: 'all',
         // uncomment the following to create a separate bundle for each npm module
         // maxInitialRequests: Infinity,
         // minSize: 0,
@@ -79,7 +79,7 @@ module.exports = (env, { mode, analyze } = {}) => {
         //     }
         //   }
         // }
-      }
+      // }
     },
     performance: {
       hints: false
@@ -89,8 +89,8 @@ module.exports = (env, { mode, analyze } = {}) => {
       new AureliaPlugin(),
       new GlobDependenciesPlugin({ 'main': ['src/{views,custom-elements,converters,attributes}/**/*.{ts,html}'] }),
       new MiniCssExtractPlugin({
-        filename: '[name].[fullhash].css',
-        chunkFilename: '[name].[chunkhash].css',
+        filename: '[name].css',
+        chunkFilename: '[name].css',
         experimentalUseImportModule: false
       }),
       new webpack.NormalModuleReplacementPlugin(/environments\/environment/gi, `environments/${production ? 'production' : 'environment'}`),
