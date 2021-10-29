@@ -54,7 +54,7 @@ void setup_web_server()
   webServer->on("/settings", HTTPMethod::HTTP_GET, handleSettingsGet);
   webServer->on("/settings", HTTPMethod::HTTP_OPTIONS, sendCrossOriginHeader);
   webServer->on("/settings", HTTPMethod::HTTP_POST, handleSettingsPost);
-  webServer->serveStatic("/", LittleFS, "/", "max-age=0"); 
+  webServer->serveStatic("/", LittleFS, "/", "public"); 
   webServer->begin();
 }
 
