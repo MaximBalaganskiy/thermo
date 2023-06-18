@@ -216,6 +216,7 @@ void setCrossOrigin()
   webServer->sendHeader("Access-Control-Max-Age", "600");
   webServer->sendHeader("Access-Control-Allow-Methods", "PUT,POST,GET,OPTIONS");
   webServer->sendHeader("Access-Control-Allow-Headers", "*");
+  webServer->sendHeader("Access-Control-Allow-Private-Network", "true");
 };
 
 void handleSettingsGet()
