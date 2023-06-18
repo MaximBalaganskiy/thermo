@@ -29,10 +29,7 @@ module.exports = (env, { mode, analyze } = {}) => {
     devServer: {
       hot: true,
       port: 4300,
-      https: {
-        key: './server.key',
-        cert: './server.crt'
-      }
+      https: false
     },
     resolve: {
       extensions: ['.ts', '.js'],
